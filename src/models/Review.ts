@@ -5,7 +5,7 @@ export interface ReviewDocument extends Document {
   productId: ObjectId | string
   rate: 1 | 2 | 3 | 4 | 5
   comment: string
-  reviewState: 'approved' | 'pending'
+  reviewState?: 'approved' | 'suspend'
 }
 
 const ReviewSchema = new Schema<ReviewDocument>({
@@ -30,7 +30,8 @@ const ReviewSchema = new Schema<ReviewDocument>({
   },
   reviewState: {
     type: String,
-    enum: ['approved', 'pending'],
+    enum: ['approved', 'suspend'],
+    default: 'approved'
   },
 },{ timestamps: true })
 

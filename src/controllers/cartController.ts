@@ -3,7 +3,8 @@ import { NextFunction, Request, Response } from 'express'
 import cartService from '../services/cartService'
 
 const getAllCarts = async (req: Request, res: Response, next: NextFunction) => {
-  return res.json(req.body)
+  const carts = await cartService.getAllCarts()
+  return res.json(carts)
 }
 
 const getCartByUserId = async (req: Request, res: Response) => {

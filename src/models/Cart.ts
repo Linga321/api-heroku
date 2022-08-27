@@ -33,6 +33,7 @@ const cartSchema = new Schema(
     status: {
       type: String,
       enum: ['Paid', 'Pending', 'Suspend'],
+      default:'Pending'
     },
   },
   {

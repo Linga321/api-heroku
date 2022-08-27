@@ -15,6 +15,6 @@ cartRouter.get('/:cartId/:status', verifyUserLogin, cartController.getCartByUser
 
 cartRouter.put('', verifyUserLogin,  cartController.updateCart )
 
-cartRouter.delete('/:cartId', verifyAdmin, cartController.deleteCart )
+cartRouter.delete('/:cartId', verifyUserLogin, cartController.deleteCart )
 
 export default cartRouter

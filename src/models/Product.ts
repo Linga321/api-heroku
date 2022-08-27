@@ -37,11 +37,6 @@ productSchema.virtual('categories', {
   foreignField: '_id',
 })
 
-productSchema.virtual('uploads', {
-  ref: 'uploads',
-  localField: 'imagesId',
-  foreignField: '_id',
-})
 
 //Export Product model , products will be appear in mogodb
 
