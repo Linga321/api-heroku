@@ -1,48 +1,57 @@
 import { Request, Response, NextFunction } from 'express'
-import jwt_ from 'jwt-simple'
 
 import AuthService from '../services/authService'
 import stringGenerator from '../util/randomString'
-import { NotFoundError, UnauthorizedError, InternalServerError } from '../helpers/apiError'
+import {
+  NotFoundError,
+  UnauthorizedError,
+  InternalServerError,
+} from '../helpers/apiError'
 import Auth from '../models/Auth'
 import { getValidToken } from '../middlewares/userMiddlewares'
 
-const userLogin = async (req: Request, res: Response,next: NextFunction) => {
+const userLogin = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body
   const authUser = await AuthService.userLogin(email, password)
   if (authUser) {
-    const foundAuth = await AuthService.getAuthByUserIdAndStatus(authUser._id, 'Login') // check if already logined
+    const foundAuth = await AuthService.getAuthByUserIdAndStatus(
+      authUser._id,
+      'Login'
+    ) // check if already logined
     if (!foundAuth) {
       // to store login data with time
       const loginInfo = new Auth({
         userId: authUser._id,
         token: stringGenerator.tokenGenerator(),
-        status: 'Login', // login status
+        status: 'Login',
       })
-      const loginToken = await  AuthService.insertAuth(loginInfo)
+      const loginToken = await AuthService.insertAuth(loginInfo)
       if (!loginToken) {
         next(new InternalServerError('While storing new auth error occurred'))
       }
       return res.json({ token: loginToken.token })
     }
-    return res.json({ token: foundAuth.token }) // user not logout yet, 
+    return res.json({ token: foundAuth.token }) // user not logout yet
   } else {
     next(new UnauthorizedError('Username or password incorrect'))
   }
 }
 
-const userLogout = async (req: Request, res: Response,next: NextFunction) => {
-  const token = await getValidToken(req,res,next)
-  const user = await AuthService.userLogout(token)
+const userLogout = async (req: Request, res: Response, next: NextFunction) => {
+  const token = await getValidToken(req, res, next)
+  await AuthService.userLogout(token)
   return res.redirect('/')
 }
 
-const getUserProfile = async (req: Request, res: Response ,next: NextFunction) => {
-  const token = await getValidToken(req,res,next)
-  const auth = (await AuthService.getUserProfile(token))
-  console.log(token, auth)
+const getUserProfile = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const token = await getValidToken(req, res, next)
+  const auth = await AuthService.getUserProfile(token)
   if (auth) {
-    return res.json(auth)//res.json(jwt_.encode(auth, 'test_key'))
+    return res.json(auth) //res.json(jwt_.encode(auth, 'test_key'))
   } else {
     next(new UnauthorizedError('User token invalid'))
   }
@@ -56,7 +65,11 @@ const getAllAuths = async (req: Request, res: Response, next: NextFunction) => {
   return res.json(authList)
 }
 
-const getAuthByUserId = async (req: Request, res: Response, next: NextFunction) => {
+const getAuthByUserId = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { userId } = req.params
   const auth = await AuthService.getAuthByUserId(userId)
   if (!auth) {
@@ -65,7 +78,11 @@ const getAuthByUserId = async (req: Request, res: Response, next: NextFunction) 
   return res.json(auth)
 }
 
-const getSingleAuth = async (req: Request, res: Response, next: NextFunction) => {
+const getSingleAuth = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { authId } = req.params
   const auth = await AuthService.getSingleAuth(authId)
   if (auth) {
@@ -76,17 +93,17 @@ const getSingleAuth = async (req: Request, res: Response, next: NextFunction) =>
 }
 
 // update time lock time
-const updateAuth = async (req: Request, res: Response,  next: NextFunction) => {
+const updateAuth = async (req: Request, res: Response, next: NextFunction) => {
   const { authId } = req.params
   const auth = req.body
   const authUpdate = await AuthService.updateAuth(authId, auth)
   if (authUpdate) {
-    next(new NotFoundError(`Auth not Update`))
+    next(new NotFoundError('Auth not Update'))
   }
   return res.json(authUpdate)
 }
 
-const deleteAuth = async (req: Request, res: Response,  next: NextFunction) => {
+const deleteAuth = async (req: Request, res: Response, next: NextFunction) => {
   const { authId } = req.params
   const auth = await AuthService.deleteAuth(authId)
   if (!auth) {

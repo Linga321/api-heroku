@@ -1,5 +1,4 @@
 import ProductModel, { ProductDocument } from '../models/Product'
-import { NotFoundError } from '../helpers/apiError'
 import { ObjectId } from 'mongoose'
 
 const getAllProductPaginationPipline = async (
@@ -39,7 +38,6 @@ const getAllProductPipline = async () => {
       foreignField: '_id',
       as: 'images',
     })
-  
 }
 
 const getAllProduct = async (): Promise<ProductDocument[]> => {
@@ -64,7 +62,6 @@ const getProductByCategoryId = async (categoryId: ObjectId) => {
 const insertProduct = async (
   product: ProductDocument
 ): Promise<ProductDocument> => {
-  console.log(product)
   return await product.save()
 }
 
@@ -75,7 +72,6 @@ const updateProduct = async (
   return await ProductModel.findByIdAndUpdate(productId, update, {
     new: true,
   })
-  
 }
 
 const deleteProduct = async (

@@ -1,6 +1,5 @@
 import express from 'express'
 import path from 'path'
-import passport from 'passport'
 import session from 'express-session'
 import cors from 'cors'
 import fileUpload from 'express-fileupload'
@@ -9,8 +8,6 @@ import fileUpload from 'express-fileupload'
 import dotenv from 'dotenv'
 
 import apiErrorHandler from './middlewares/apiErrorHandler'
-import apiContentType from './middlewares/apiContentType'
-
 import productRouter from './routers/productRoute'
 import userRoute from './routers/userRoute'
 import imageRoute from './routers/imageRoute'
@@ -31,7 +28,6 @@ const corsOptions = {
 app.set('port', process.env.PORT || 3000)
 
 // Global middleware
-//app.use(apiContentType)
 app.use(express.json())
 
 //middleware
@@ -40,17 +36,16 @@ app.use(
   fileUpload({
     createParentPath: true,
     limits: { fileSize: 50 * 1024 * 1024 },
-    abortOnLimit: true
+    abortOnLimit: true,
   })
 )
-app.set('uploads', path.join(__dirname, 'uploads'));// set the folder name to 
+app.set('uploads', path.join(__dirname, 'uploads')) // set the folder name to
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(express.text())
-app.use(express.static('public'));
-app.use(express.static(path.join(__dirname, 'uploads')));
+app.use(express.static('public'))
+app.use(express.static(path.join(__dirname, 'uploads')))
 
-console.log(path.join(__dirname, 'uploads') )
 //config passport
 app.use(
   session({
@@ -65,7 +60,7 @@ app.use(
 // route
 app.use('/products', productRouter)
 
-app.use('/cart', cartRouter)
+app.use('/carts', cartRouter)
 app.use('/category', categoryRouter)
 
 //swagger api docs
@@ -75,6 +70,5 @@ app.use('/auth', authRoute)
 
 // Custom API error handler
 app.use(apiErrorHandler)
-
 
 export default app

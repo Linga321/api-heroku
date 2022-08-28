@@ -1,5 +1,6 @@
 import ImageModel, { ImageDocument } from '../models/Image'
-import { NotFoundError } from '../helpers/apiError'
+import Product from '../models/Product'
+import Category from '../models/Category'
 
 const getAllCategories = async (): Promise<ImageDocument[]> => {
   return await ImageModel.find()
@@ -15,15 +16,32 @@ const insertImage = async (image: ImageDocument) => {
   return await image.save()
 }
 
-const updateImage = async (
-  imageId: string,
-  update: Partial<ImageDocument>
-) => {
-  return await ImageModel.findByIdAndUpdate(imageId,update,{new: true,})
+const updateImage = async (imageId: string, update: Partial<ImageDocument>) => {
+  return await ImageModel.findByIdAndUpdate(imageId, update, { new: true })
 }
 
 const deleteImage = async (imageId: string) => {
-  return ImageModel.findByIdAndDelete(imageId)
+  await Product.update(
+    {
+      imagesId: imageId,
+    },
+    {
+      $pull: {
+        imagesId: imageId,
+      },
+    }
+  )
+  await Category.update(
+    {
+      image: imageId,
+    },
+    {
+      $pull: {
+        image: imageId,
+      },
+    }
+  )
+  return await ImageModel.findByIdAndDelete(imageId)
 }
 
 export default {

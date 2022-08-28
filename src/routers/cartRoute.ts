@@ -5,16 +5,20 @@ import { verifyAdmin, verifyUserLogin } from '../middlewares/userMiddlewares'
 
 const cartRouter = Router()
 
-cartRouter.get('',verifyAdmin, cartController.getAllCarts )
+cartRouter.get('', verifyAdmin, cartController.getAllCarts)
 
-cartRouter.post('',verifyUserLogin,  cartController.createCart )
+cartRouter.post('', verifyUserLogin, cartController.createCart)
 
 cartRouter.get('/:cartId', verifyUserLogin, cartController.getSingleCartById)
 
-cartRouter.get('/:cartId/:status', verifyUserLogin, cartController.getCartByUserId )
+cartRouter.get(
+  '/:userId/:status',
+  verifyUserLogin,
+  cartController.getCartByUserId
+)
 
-cartRouter.put('', verifyUserLogin,  cartController.updateCart )
+cartRouter.put('', verifyUserLogin, cartController.updateCart)
 
-cartRouter.delete('/:cartId', verifyUserLogin, cartController.deleteCart )
+cartRouter.delete('/:cartId', verifyUserLogin, cartController.deleteCart)
 
 export default cartRouter

@@ -1,5 +1,5 @@
 import CategoryModel, { CategoryDocument } from '../models/Category'
-import { NotFoundError } from '../helpers/apiError'
+import Product from '../models/Product'
 
 const getAllCategories = async (): Promise<CategoryDocument[]> => {
   return await CategoryModel.find().populate('image')
@@ -19,10 +19,22 @@ const updateCategory = async (
   categoryId: string,
   update: Partial<CategoryDocument>
 ) => {
-  return await CategoryModel.findByIdAndUpdate(categoryId,update,{new: true,}).populate('image')
+  return await CategoryModel.findByIdAndUpdate(categoryId, update, {
+    new: true,
+  }).populate('image')
 }
 
 const deleteCategory = async (categoryId: string) => {
+  Product.update(
+    {
+      categoryId: categoryId,
+    },
+    {
+      $pull: {
+        categoryId: categoryId,
+      },
+    }
+  )
   return CategoryModel.findByIdAndDelete(categoryId)
 }
 

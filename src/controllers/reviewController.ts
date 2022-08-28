@@ -3,7 +3,7 @@ import Review from '../models/Review'
 
 import reviewService from '../services/reviewService'
 
-const getAllReviews = async (req: Request, res: Response, next: NextFunction) => {
+const getAllReviews = async (req: Request, res: Response) => {
   const review = await reviewService.getAllReviews()
   return res.json(review)
 }
@@ -11,7 +11,7 @@ const getAllReviews = async (req: Request, res: Response, next: NextFunction) =>
 const getReviewRateByProductId = async (req: Request, res: Response) => {
   const { productId } = req.params
   const review = await reviewService.getReviewRateByProductId(productId)
-  return res.json(review)
+  return res.json(review[0])
 }
 
 const getReviewByProductId = async (req: Request, res: Response) => {
@@ -35,7 +35,7 @@ const createReview = async (req: Request, res: Response) => {
 const updateReview = async (req: Request, res: Response) => {
   const { reviewId } = req.params
   const review = req.body
-  const reviewUpdate = await reviewService.updateReview(reviewId,review)
+  const reviewUpdate = await reviewService.updateReview(reviewId, review)
   return res.json(reviewUpdate)
 }
 
@@ -54,4 +54,3 @@ export default {
   getReviewByProductId,
   getReviewRateByProductId,
 }
-

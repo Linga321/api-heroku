@@ -1,8 +1,4 @@
 import CartModel, { CartDocument } from '../models/Cart'
-import { NotFoundError } from '../helpers/apiError'
-import User from '../models/User'
-import Product from '../models/Product'
-import productService from './productService'
 
 const getAllCarts = async () => {
   return await CartModel.find()
@@ -33,7 +29,7 @@ const insertCart = async (cart: CartDocument) => {
 }
 
 const getSingleCartById = async (cartId: string) => {
-  return CartModel.findOne({cartId })
+  return CartModel.findOne({ cartId })
 }
 
 const updateCart = async (id: string, update: Partial<CartDocument>) => {
@@ -42,7 +38,6 @@ const updateCart = async (id: string, update: Partial<CartDocument>) => {
 
 const deleteCart = async (id: string) => {
   return await CartModel.findByIdAndDelete(id)
-
 }
 
 const deleteCartByUserId = async (userId: string) => {

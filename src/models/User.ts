@@ -11,11 +11,12 @@ export interface UserDocument extends Document {
   role?: UserRole
   avatar?: string
   phone?: string
-  address?: 
-    {
-      user_address: string
-      place: string
-    }[]
+  address?: {
+    userAddress: string
+    place: string
+  }[]
+  createdAt?: Date
+  updatedAt?: Date
   comparePassword(password: string): Promise<boolean>
 }
 
@@ -48,7 +49,7 @@ const userSchema = new Schema<UserDocument>(
     role: {
       type: String,
       enum: ['Customer', 'Admin', 'SuperAdmin'],
-      default:'Customer'
+      default: 'Customer',
     },
     avatar: { type: Schema.Types.ObjectId, ref: 'Image' },
     phone: {
@@ -58,14 +59,13 @@ const userSchema = new Schema<UserDocument>(
     },
     address: [
       {
-        user_address: {
+        userAddress: {
           type: Schema.Types.ObjectId,
           ref: 'Address',
         },
         place: { type: String },
       },
     ],
-    // status: {type: Bool, default :1} if we suspend the user
   },
   { timestamps: true }
 )

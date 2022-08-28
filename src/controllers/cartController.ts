@@ -1,10 +1,16 @@
 import { NextFunction, Request, Response } from 'express'
+import { NotFoundError } from 'src/helpers/apiError'
+import Cart from '../models/Cart'
 
 import cartService from '../services/cartService'
 
 const getAllCarts = async (req: Request, res: Response, next: NextFunction) => {
   const carts = await cartService.getAllCarts()
-  return res.json(carts)
+  if (carts) {
+    return res.json(carts) //res.json(jwt_.encode(auth, 'test_key'))
+  } else {
+    next(new NotFoundError('Carts not found'))
+  }
 }
 
 const getCartByUserId = async (req: Request, res: Response) => {
@@ -20,15 +26,15 @@ const getSingleCartById = async (req: Request, res: Response) => {
 }
 
 const createCart = async (req: Request, res: Response) => {
-  const cart = req.body
-  const cartCreate = await cartService.insertCart(cart)
+  const { cart } = req.body
+  const cartCreate = await cartService.insertCart(new Cart(cart))
   return res.json(cartCreate)
 }
 
 const updateCart = async (req: Request, res: Response) => {
   const { cartId } = req.params
   const cart = req.body
-  const cartUpdate = await cartService.updateCart(cartId,cart)
+  const cartUpdate = await cartService.updateCart(cartId, cart)
   return res.json(cartUpdate)
 }
 
@@ -46,4 +52,3 @@ export default {
   deleteCart,
   createCart,
 }
-

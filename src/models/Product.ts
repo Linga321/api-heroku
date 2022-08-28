@@ -1,4 +1,4 @@
-import mongoose, { ObjectId, Schema, Document } from 'mongoose'
+import mongoose, { Schema, Document } from 'mongoose'
 
 export interface ProductDocument extends Document {
   title: string
@@ -16,10 +16,9 @@ const productSchema = new Schema(
     description: { type: String, maxlength: 200 },
     discount: { type: Number, min: 0, max: 100 },
     price: { type: Number, min: 0, max: 1000 },
-    quantity: { type: Number, min: 0, max: 1000},
+    quantity: { type: Number, min: 0, max: 1000 },
     categoryId: [{ type: Schema.Types.ObjectId, ref: 'Category' }],
     imagesId: [{ type: Schema.Types.ObjectId, ref: 'Image' }],
-    // status: {type: Bool, default :1} if we suspend the product
   },
   {
     toJSON: {
@@ -36,7 +35,6 @@ productSchema.virtual('categories', {
   localField: 'categoryId',
   foreignField: '_id',
 })
-
 
 //Export Product model , products will be appear in mogodb
 

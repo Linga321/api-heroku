@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import path from 'path'
-import { unlinkSync, rename } from 'fs'
+import { unlinkSync } from 'fs'
 
 import { UploadedFile } from 'express-fileupload'
 import Image, { ImageDocument } from '../models/Image'
@@ -19,21 +19,16 @@ const getSingleImage = async (
   next: NextFunction
 ) => {
   const { imageId } = req.params
-  // return res.sendFile('/uploads/'+image?.filelocation)
-  console.log(imageId)
-  var options = {
+  const options = {
     root: path.join(__dirname) + '../uploads',
   }
-
-  var fileName = (await imageService.getSingleImage(imageId))?.filelocation
+  const fileName = (await imageService.getSingleImage(imageId))?.filelocation
 
   if (fileName) {
-    console.log(__dirname)
     res.sendFile(fileName, options, function (err) {
       if (err) {
-        next(new NotFoundError())
+        next(new NotFoundError('Imge not found'))
       } else {
-        console.log('Sent:', fileName)
         next()
       }
     })
@@ -62,7 +57,7 @@ const createImage = async (req: Request, res: Response) => {
         filename: newfilename + '_' + file.name,
         filelocation: 'http://localhost:5000/' + newfilename + '_' + file.name,
       }
-      let newimage = new Image(image)
+      const newimage = new Image(image)
       if (req.body?.imageId) {
         await unlinkSync(imageDirPath + `/${req.body?.fileName}`)
         imageCreate = await imageService.updateImage(
@@ -72,7 +67,6 @@ const createImage = async (req: Request, res: Response) => {
       } else {
         imageCreate = await imageService.insertImage(newimage)
       }
-      //   res.json(imageCreate)
       res.json(imageCreate ? imageCreate : { _id: req.body?.imageId })
     }
   }
@@ -89,7 +83,7 @@ const deleteImage = async (req: Request, res: Response) => {
   const imageDirPath = path.resolve(__dirname, '../uploads')
   const { imageId } = req.params
   const image = await imageService.deleteImage(imageId)
-  if(image){
+  if (image) {
     await unlinkSync(imageDirPath + `/${image?.filename}`)
   }
   return res.json(image)

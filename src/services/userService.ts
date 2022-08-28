@@ -1,7 +1,8 @@
 import User, { UserDocument } from '../models/User'
-
-import { NotFoundError } from '../helpers/apiError'
 import Address, { AddressDocument } from '../models/Address'
+import Review from '../models/Review'
+import Product from '../models/Product'
+import Cart from '../models/Cart'
 
 const getAllUsers = async (): Promise<UserDocument[]> => {
   return await User.find()
@@ -20,6 +21,9 @@ const getUserByEmail = async (email: string): Promise<UserDocument | null> => {
 }
 
 const deleteUser = async (userId: string): Promise<UserDocument | null> => {
+  await Review.deleteMany({ userId: userId })
+  await Product.deleteMany({ userId: userId })
+  await Cart.deleteMany({ userId: userId })
   return await User.findByIdAndDelete(userId)
 }
 
@@ -47,8 +51,10 @@ const insertUserAddress = async (
   return await address.save()
 }
 
-const getSingleUserAddresses = async (addressId: string[]) => {
-  return await Address.find({_id:{ $in : addressId }})
+const getSingleUserAddresses = async (userId: string) => {
+  return await User.find({ _id: userId }, { address: 1 }).populate([
+    'address.userAddress',
+  ])
 }
 
 const updateUserAddress = async (
@@ -57,13 +63,37 @@ const updateUserAddress = async (
 ): Promise<UserDocument | null> => {
   return await User.findByIdAndUpdate(userId, updatedObject)
 }
-const findUserAddress = async (findObject: any): Promise<UserDocument | null> => {
+const findUserAddress = async (
+  findObject: any
+): Promise<UserDocument | null> => {
   return await User.findOne(findObject)
 }
 
-const deleteUserAddress = async (
-  addressId: string
-): Promise<AddressDocument | null> => {
+const deleteUserAddress = async (addressId: string, userId: string) => {
+  await User.update(
+    { _id: userId, address: { $elemMatch: { userAddress: addressId } } },
+    { $pull: { 'address.$.userAddress': addressId } }
+  )
+  return await User.find({ _id: userId })
+}
+
+const deleteAddress = async (addressId: string) => {
+  await User.update(
+    {
+      address: {
+        $elemMatch: {
+          userAddress: addressId,
+        },
+      },
+    },
+    {
+      $pull: {
+        address: {
+          userAddress: addressId,
+        },
+      },
+    }
+  )
   return await Address.findByIdAndDelete(addressId)
 }
 
@@ -74,7 +104,9 @@ const updateAddress = async (
   return await Address.findByIdAndUpdate(userId, updatedObject)
 }
 
-const findAddress = async (findObject: any): Promise<AddressDocument | null> => {
+const findAddress = async (
+  findObject: any
+): Promise<AddressDocument | null> => {
   return await Address.findOne(findObject)
 }
 
@@ -89,6 +121,7 @@ export default {
   insertUserAddress,
   getSingleUserAddresses,
   deleteUserAddress,
+  deleteAddress,
   updateAddress,
   updateUserAddress,
   findAddress,

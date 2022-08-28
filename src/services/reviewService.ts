@@ -1,28 +1,41 @@
 import ReviewModel, { ReviewDocument } from '../models/Review'
-import { NotFoundError } from '../helpers/apiError'
 
 const getAllReviews = async (): Promise<ReviewDocument[]> => {
   return await ReviewModel.find()
 }
 
-const getSingleReview = async (reviewId: string): Promise<ReviewDocument | null> => {
+const getSingleReview = async (
+  reviewId: string
+): Promise<ReviewDocument | null> => {
   return await ReviewModel.findById(reviewId)
 }
 
 const getReviewByProductId = async (
   productId: string
 ): Promise<ReviewDocument[]> => {
-  return await ReviewModel.find({ productId: productId })
+  return await ReviewModel.find({ productId: productId }).populate({
+    path: 'userId',
+    model: 'User',
+    select: { firstName: 1, lastName: 1, avatar: 1 },
+    populate: [
+      {
+        path: 'avatar',
+        model: 'Image',
+      },
+    ],
+  })
 }
 
-const getReviewRateByProductId = async (
-  productId: string
-) => {
-  return await ReviewModel.aggregate([{$match : {productId : productId}},{$group: {_id:null, avg_rate:{$avg:"$rate"}}}])
+const getReviewRateByProductId = async (productId: string) => {
+  const ObjectId = require('mongoose').Types.ObjectId
+  return await ReviewModel.aggregate([
+    { $match: { productId: ObjectId(productId) } },
+    { $group: { _id: 0, avgRate: { $avg: '$rate' } } },
+  ])
 }
 
 const insertReview = async (review: ReviewDocument) => {
-  return await review.save()
+  return await ReviewModel.create(review)
 }
 
 const updateReview = async (

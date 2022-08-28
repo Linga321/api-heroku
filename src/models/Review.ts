@@ -8,32 +8,33 @@ export interface ReviewDocument extends Document {
   reviewState?: 'approved' | 'suspend'
 }
 
-const ReviewSchema = new Schema<ReviewDocument>({
-  userId: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
+const ReviewSchema = new Schema(
+  {
+    userId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+    },
+    productId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Product',
+    },
+    rate: {
+      type: Number,
+      enum: [1, 2, 3, 4, 5],
+      required: true,
+      default: 3,
+    },
+    comment: {
+      type: String,
+    },
+    reviewState: {
+      type: String,
+      enum: ['approved', 'suspend'],
+      default: 'approved',
+    },
   },
-  productId: {
-    type: Schema.Types.ObjectId,
-    ref: 'Product',
-    required: true,
-  },
-  rate: {
-    type: Number,
-    enum: [1, 2, 3, 4, 5],
-    required: true,
-    default:3,
-  },
-  comment: {
-    type: String,
-  },
-  reviewState: {
-    type: String,
-    enum: ['approved', 'suspend'],
-    default: 'approved'
-  },
-},{ timestamps: true })
+  { timestamps: true }
+)
 
 const Review = mongoose.model<ReviewDocument>('Review', ReviewSchema)
 export default Review
