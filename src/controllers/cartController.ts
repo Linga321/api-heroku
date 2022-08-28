@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { NotFoundError } from 'src/helpers/apiError'
+import { NotFoundError } from '../helpers/apiError'
 import Cart from '../models/Cart'
 
 import cartService from '../services/cartService'
