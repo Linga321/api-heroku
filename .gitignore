@@ -5,7 +5,7 @@ node_modules
 /.pnp
 .pnp.js
 .git
-
+test
 # lock files
 package-lock.json
 yarn.lock
