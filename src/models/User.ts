@@ -11,10 +11,12 @@ export interface UserDocument extends Document {
   role?: UserRole
   avatar?: string
   phone?: string
-  address?: {
-    userAddress: string
-    place: string
-  }[]
+  address?: [
+    {
+      userAddress: string
+      place: string
+    }
+  ]
   createdAt?: Date
   updatedAt?: Date
   comparePassword(password: string): Promise<boolean>

@@ -13,7 +13,7 @@ const authSchema = new Schema(
     status: {
       type: String,
       enum: ['Login', 'Logout'],
-      default:'Login'
+      default: 'Login',
     },
   },
   { timestamps: true }
