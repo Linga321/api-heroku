@@ -53,9 +53,10 @@ const createImage = async (req: Request, res: Response) => {
       return res.status(422).send('Invalid Image')
     } else {
       await file.mv(path.resolve(imageDirPath, newfilename + '_' + file.name))
+      const url = process.env['BASE_URL']
       const image = {
         filename: newfilename + '_' + file.name,
-        filelocation: 'http://localhost:5000/' + newfilename + '_' + file.name,
+        filelocation: url + newfilename + '_' + file.name,
       }
       const newimage = new Image(image)
       if (req.body?.imageId) {
