@@ -7,6 +7,7 @@ import Image, { ImageDocument } from '../models/Image'
 import imageService from '../services/imageService'
 import stringGenerator from '../util/randomString'
 import { NotFoundError } from '../helpers/apiError'
+import { BASE_URL } from '../util/secrets'
 
 const getAllCategories = async (req: Request, res: Response) => {
   const categories = await imageService.getAllCategories()
@@ -53,14 +54,15 @@ const createImage = async (req: Request, res: Response) => {
       return res.status(422).send('Invalid Image')
     } else {
       await file.mv(path.resolve(imageDirPath, newfilename + '_' + file.name))
-      const url = process.env['BASE_URL']
+
       const image = {
         filename: newfilename + '_' + file.name,
-        filelocation: url + '/' + newfilename + '_' + file.name,
+        filelocation: BASE_URL + '/' + newfilename + '_' + file.name,
       }
       const newimage = new Image(image)
       if (req.body?.imageId) {
-        await unlinkSync(imageDirPath + `/${req.body?.fileName}`)
+        const foundFile = await imageService.insertImage(req.body?.imageId)
+        await unlinkSync(imageDirPath + `/${foundFile?.filename}`)
         imageCreate = await imageService.updateImage(
           req.body?.imageId,
           image as Partial<ImageDocument>

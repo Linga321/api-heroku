@@ -39,7 +39,10 @@ const createCategory = async (
     new Category(category)
   )
   if (categoryCreate) {
-    return await res.json(categoryService.getSingleCategory(categoryCreate._id)) // populated data sending back
+    const foundCategory = await categoryService.getSingleCategory(
+      categoryCreate._id
+    )
+    return await res.json(foundCategory) // populated data sending back
   } else {
     return next(new BadRequestError(`Category not Saved, Bad data ${category}`))
   }

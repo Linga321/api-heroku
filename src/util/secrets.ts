@@ -13,13 +13,18 @@ if (fs.existsSync('.env')) {
 
 export const ENVIRONMENT = process.env.NODE_ENV
 const prod = ENVIRONMENT === 'production' // Anything else is treated as 'dev'
-
+export const BASE_URL = process.env['BASE_URL'] as string
 export const JWT_SECRET = process.env['JWT_SECRET'] as string
 export const MONGODB_URI = process.env['MONGODB_URI'] as string
 // Use this instead if you want to use local mongodb
 // export const MONGODB_URI = (
 //   prod ? process.env['MONGODB_URI'] : process.env['MONGODB_URI_LOCAL']
 // ) as string
+
+if (!BASE_URL) {
+  logger.error('No BASE_URLT environment variable.')
+  process.exit(1)
+}
 
 if (!JWT_SECRET) {
   logger.error('No client secret. Set JWT_SECRET environment variable.')
