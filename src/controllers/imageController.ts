@@ -56,7 +56,7 @@ const createImage = async (req: Request, res: Response) => {
       const url = process.env['BASE_URL']
       const image = {
         filename: newfilename + '_' + file.name,
-        filelocation: url + newfilename + '_' + file.name,
+        filelocation: url + '/' + newfilename + '_' + file.name,
       }
       const newimage = new Image(image)
       if (req.body?.imageId) {
