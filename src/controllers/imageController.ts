@@ -55,7 +55,7 @@ const createImage = async (req: Request, res: Response) => {
       await file.mv(path.resolve(imageDirPath, newfilename + '_' + file.name))
       const image = {
         filename: newfilename + '_' + file.name,
-        filelocation: 'https://shop3-api.herokuapp.com/' + newfilename + '_' + file.name,
+        filelocation: BASE_URL + newfilename + '_' + file.name,
       }
       const newimage = new Image(image)
       if (req.body?.imageId) {
