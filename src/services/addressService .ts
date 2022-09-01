@@ -1,5 +1,4 @@
 import Address, { AddressDocument } from '../models/Address'
-import { NotFoundError } from '../helpers/apiError'
 
 const getAllAddresss = async (): Promise<AddressDocument[]> => {
   return await Address.find()

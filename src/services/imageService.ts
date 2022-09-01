@@ -2,8 +2,8 @@ import ImageModel, { ImageDocument } from '../models/Image'
 import Product from '../models/Product'
 import Category from '../models/Category'
 
-const getAllCategories = async (): Promise<ImageDocument[]> => {
-  return await ImageModel.find()
+const getImages = async (imagesId : string[]): Promise<ImageDocument[]> => {
+  return await ImageModel.find({_id : {$in : imagesId}})
 }
 
 const getSingleImage = async (
@@ -45,7 +45,7 @@ const deleteImage = async (imageId: string) => {
 }
 
 export default {
-  getAllCategories,
+  getImages,
   getSingleImage,
   insertImage,
   updateImage,

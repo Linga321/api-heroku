@@ -20,6 +20,10 @@ const getCartByUserId = async (userId: string, status: string) => {
         path: 'imagesId',
         model: 'Image',
       },
+      {
+        path: 'categoryId',
+        model: 'Category',
+      },
     ],
   })
 }

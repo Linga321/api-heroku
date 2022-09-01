@@ -1,6 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose'
 import bcrypt from 'bcrypt'
 import { NotFoundError } from '../helpers/apiError'
+import { ObjectId } from 'mongodb'
 
 export type UserRole = 'Customer' | 'Admin' | 'SuperAdmin'
 export interface UserDocument extends Document {
@@ -13,7 +14,7 @@ export interface UserDocument extends Document {
   phone?: string
   address?: [
     {
-      userAddress: string
+      userAddress: string | ObjectId
       place: string
     }
   ]

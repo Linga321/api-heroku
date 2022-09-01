@@ -1,7 +1,5 @@
-
-
 import Auth, { AuthDocument } from '../models/Auth'
-import User, { UserDocument } from '../models/User'
+import User from '../models/User'
 
 import userService from './userService'
 
@@ -46,14 +44,12 @@ const getAuthByUserToken = async (token: string) => {
     },
   })
 }
-const getUserProfile= async (token: string) => {
+const getUserProfile = async (token: string) => {
   // get data using token and get spec fields
   const auth = await Auth.findOne({ token: token })
-  if(auth){
+  if (auth) {
     return await userService.getSingleUser(auth.userId as string)
-  }
-  else
-  {
+  } else {
     return null
   }
 }

@@ -59,26 +59,46 @@ const getSingleUserAddresses = async (userId: string) => {
 
 const updateUserAddress = async (
   userId: string,
-  updatedObject: Partial<UserDocument>
+  updatedObject: any
 ): Promise<UserDocument | null> => {
   return await User.findByIdAndUpdate(userId, updatedObject)
 }
+
 const findUserAddress = async (
   findObject: any
 ): Promise<UserDocument | null> => {
   return await User.findOne(findObject)
 }
 
-const deleteUserAddress = async (addressId: string, userId: string) => {
-  await User.update(
+const findUserAddresses = async (
+  findObject: any
+) => {
+  return await User.find(findObject)
+}
+
+const deleteUserAddress = async (userId: string, addressId: string) => {
+  await User.updateOne(
     { _id: userId, address: { $elemMatch: { userAddress: addressId } } },
-    { $pull: { 'address.$.userAddress': addressId } }
+    {
+      $pull: {
+        address: {
+          userAddress: addressId,
+        },
+      },
+    }
   )
+  const found = await User.find({
+    address: { $elemMatch: { userAddress: addressId } },
+  })
+  if (found?.length === 0) {
+    // if only one user has that address then delete the address
+    await deleteAddress(addressId)
+  }
   return await User.find({ _id: userId })
 }
 
 const deleteAddress = async (addressId: string) => {
-  await User.update(
+  await User.updateMany(
     {
       address: {
         $elemMatch: {
@@ -126,4 +146,5 @@ export default {
   updateUserAddress,
   findAddress,
   findUserAddress,
+  findUserAddresses,
 }

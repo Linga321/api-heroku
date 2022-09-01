@@ -8,7 +8,7 @@ export interface CartDocument extends Document {
       itemQuantity: number
     }
   ]
-  status: 'Paid' | 'Pending' | 'Suspend'
+  status?: 'Paid' | 'Pending' | 'Suspend'
   createdAt?: Date
   updatedAt?: Date
 }
