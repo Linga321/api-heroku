@@ -1,47 +1,16 @@
 import ProductModel, { ProductDocument } from '../models/Product'
 import { ObjectId } from 'mongoose'
 
-const getAllProductPaginationPipline = async (
+const getAllProductByPagination = async (
   page: number,
   limit: number,
   sort: string
 ) => {
-  return await ProductModel.aggregate()
+  return await ProductModel.find()
     .sort({ [sort]: 1 })
     .skip(page * limit)
     .limit(limit)
-    .lookup({
-      from: 'categories',
-      localField: 'categoryId',
-      foreignField: '_id',
-      as: 'categories',
-    })
-    .lookup({
-      from: 'images',
-      localField: 'imagesId',
-      foreignField: '_id',
-      as: 'images',
-    })
-}
-
-const getAllProductPipline = async () => {
-  return await ProductModel.aggregate()
-    .lookup({
-      from: 'categories',
-      localField: 'categoryId',
-      foreignField: '_id',
-      as: 'categories',
-    })
-    .lookup({
-      from: 'images',
-      localField: 'imagesId',
-      foreignField: '_id',
-      as: 'images',
-    })
-}
-
-const getAllProduct = async (): Promise<ProductDocument[]> => {
-  return await ProductModel.find().populate(['categoryId', 'imagesId']) //{status:1}
+    .populate(['categoryId', 'imagesId'])
 }
 
 const getSingleProduct = async (
@@ -81,10 +50,8 @@ const deleteProduct = async (
 }
 
 export default {
-  getAllProductPaginationPipline,
+  getAllProductByPagination,
   getProductByCategoryId,
-  getAllProductPipline,
-  getAllProduct,
   getSingleProduct,
   insertProduct,
   updateProduct,

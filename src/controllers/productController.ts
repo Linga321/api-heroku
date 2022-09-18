@@ -4,11 +4,11 @@ import Product from '../models/Product'
 
 import productService from '../services/productService'
 /**
- * Getting all Categories infomation.
+ * Getting all products infomation.
  * Access Level : none
  * @param req none, No middleware check product level
- * @param res if categories is found in Categories, return categories
- * @param next if product is not found when categories in empty NotFoundError
+ * @param res if products is found in products, return products filtered by page, limit, sort
+ * @param next if product is not found when products in empty NotFoundError
  * @returns res
  */
 const getAllProducts = async (
@@ -16,7 +16,12 @@ const getAllProducts = async (
   res: Response,
   next: NextFunction
 ) => {
-  const foundProducts = await productService.getAllProduct()
+  const { page, limit, sort } = req.params
+  const foundProducts = await productService.getAllProductByPagination(
+    Number(page),
+    Number(limit),
+    sort
+  )
   if (foundProducts) {
     return res.json(foundProducts)
   } else {
@@ -27,7 +32,7 @@ const getAllProducts = async (
  * Getting Sigle product infomation using productId.
  * Access Level : none
  * @param req @params productId
- * @param res if Categories is found in Categories, return Categories
+ * @param res if products is found in products, return products
  * @param next if product is not found NotFoundError
  * @returns res
  */

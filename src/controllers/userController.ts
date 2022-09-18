@@ -43,7 +43,12 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
  * @returns res
  */
 const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
-  const foundUsers = await userService.getAllUsers()
+  const { page, limit, sort } = req.params
+  const foundUsers = await userService.getAllUsersByPagination(
+    Number(page),
+    Number(limit),
+    sort
+  )
   if (!foundUsers) {
     next(new NotFoundError('user informtion empty'))
   } else {

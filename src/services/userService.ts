@@ -4,8 +4,15 @@ import Review from '../models/Review'
 import Product from '../models/Product'
 import Cart from '../models/Cart'
 
-const getAllUsers = async (): Promise<UserDocument[]> => {
+const getAllUsersByPagination = async (
+  page: number,
+  limit: number,
+  sort: string
+): Promise<UserDocument[]> => {
   return await User.find()
+    .sort({ [sort]: 1 })
+    .skip(page * limit)
+    .limit(limit)
 }
 
 const insertUser = async (user: UserDocument): Promise<UserDocument> => {
@@ -70,9 +77,7 @@ const findUserAddress = async (
   return await User.findOne(findObject)
 }
 
-const findUserAddresses = async (
-  findObject: any
-) => {
+const findUserAddresses = async (findObject: any) => {
   return await User.find(findObject)
 }
 
@@ -131,7 +136,7 @@ const findAddress = async (
 }
 
 export default {
-  getAllUsers,
+  getAllUsersByPagination,
   getSingleUser,
   deleteUser,
   updateUser,

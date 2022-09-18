@@ -1,5 +1,4 @@
 import { Router} from "express";
-import { title } from "process";
 
 import productController from "../controllers/productController"
 import reviewController from "../controllers/reviewController";
@@ -19,7 +18,7 @@ import {verifyAdmin, verifyUserLogin} from '../middlewares/userMiddlewares'
  
 const productRouter = Router()
 
-productRouter.get('', productController.getAllProducts )
+productRouter.get('/:page/:limit/:sort', productController.getAllProducts )
 
 productRouter.post('', verifyAdmin, productController.createProduct )
 

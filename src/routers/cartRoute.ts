@@ -13,14 +13,14 @@ import { verifyCart, verifyCartId } from '../middlewares/cartMiddlewares'
  */
 const cartRouter = Router()
 
-cartRouter.get('', verifyAdmin, cartController.getAllCarts)
+cartRouter.get('/:page/:limit/:sort', verifyAdmin, cartController.getAllCarts)
 
 cartRouter.post('', verifyUserLogin, verifyCart, cartController.createCart)
 
 cartRouter.get('/:cartId', verifyUserLogin, verifyCartId, cartController.getSingleCartById)
 
 cartRouter.get(
-  '/:userId/:status',
+  '/:userId/:status/:page/:limit/:sort',
   verifyUserLogin,
   verifyUserId,
   cartController.getCartByUserId

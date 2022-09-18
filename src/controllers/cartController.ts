@@ -7,12 +7,17 @@ import cartService from '../services/cartService'
  * Getting all Carts infomation.
  * Access Level : Admin
  * @param req none, middleware check user level
- * @param res if carts is found in Carts, return carts
+ * @param res if carts is found in Carts, return carts filtered by page, limit, sort
  * @param next if cart is not found when carts in empty NotFoundError
  * @returns res
  */
 const getAllCarts = async (req: Request, res: Response, next: NextFunction) => {
-  const foundCarts = await cartService.getAllCarts()
+  const { page, limit, sort } = req.params
+  const foundCarts = await cartService.getAllCartsByPagination(
+    Number(page),
+    Number(limit),
+    sort
+  )
   if (foundCarts) {
     return res.json(foundCarts) //res.json(jwt_.encode(auth, 'test_key'))
   } else {
@@ -32,8 +37,14 @@ const getCartByUserId = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { userId, status } = req.params
-  const foundCart = await cartService.getCartByUserId(userId, status)
+  const { userId, status, page, limit, sort } = req.params
+  const foundCart = await cartService.getCartByUserIdByPagination(
+    userId,
+    status,
+    Number(page),
+    Number(limit),
+    sort
+  )
   if (foundCart) {
     return res.json(foundCart)
   } else {

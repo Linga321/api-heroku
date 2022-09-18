@@ -22,7 +22,7 @@ import userController from '../controllers/userController'
  */
 const userRoute = Router()
 
-userRoute.get('', verifyAdmin, userController.getAllUsers)
+userRoute.get('/:page/:limit/:sort', verifyAdmin, userController.getAllUsers)
 
 userRoute.get('/:userId', verifyUserLogin, userController.getSingleUser)
 

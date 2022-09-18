@@ -96,11 +96,13 @@ const createImage = async (req: Request, res: Response, next: NextFunction) => {
       }
       if (req.body?.imageId) {
         const foundFile = await imageService.getSingleImage(req.body?.imageId)
-        await unlinkSync(imageDirPath + `/${foundFile?.filename}`)
-        imageFinalResult = await imageService.updateImage(
-          req.body?.imageId,
-          imageObject as Partial<ImageDocument>
-        )
+        if (foundFile) {
+          await unlinkSync(imageDirPath + `/${foundFile?.filename}`)
+          imageFinalResult = await imageService.updateImage(
+            req.body?.imageId,
+            imageObject as Partial<ImageDocument>
+          )
+        }
       } else {
         imageFinalResult = await imageService.insertImage(
           new Image(imageObject)
